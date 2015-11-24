@@ -33,6 +33,7 @@ class Node
   def breadth_first_search(t_value, searched_nodes = [], search_queue = [self])
     searched_nodes.push(self)
 
+    p value
     if value == t_value
       self
     else
@@ -50,6 +51,36 @@ class Node
     end
   end
 
+  def depth_first_search(t_value, searched_nodes = [], search_stack = [self])
+    searched_nodes.push(self)
+
+    p value
+    if value == t_value
+      self
+    else
+      search_stack.pop
+
+      search_stack.push(r_child) unless searched_nodes.include?(r_child) || r_child.nil?
+      search_stack.push(l_child) unless searched_nodes.include?(l_child) || l_child.nil?
+
+      if !search_stack.empty?
+        next_node = search_stack.last
+        next_node.depth_first_search(t_value, searched_nodes, search_stack)
+      else
+        nil
+      end
+    end
+  end
+
+  def dfs_rec(t_value)
+    p value
+    if value == t_value
+      self
+    else
+      (l_child && l_child.dfs_rec(t_value)) || (r_child && r_child.dfs_rec(t_value))
+    end
+  end
+
   def to_s
     # provisional
     # should be easier to improve after defining search methods
@@ -58,6 +89,15 @@ class Node
 end
 
 tree = Node.build_tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
-p tree.breadth_first_search(6345).object_id
-p tree.breadth_first_search(77)
-
+p tree.breadth_first_search(9).object_id
+puts "---"
+p tree.breadth_first_search(6).object_id
+puts "---"
+p tree.depth_first_search(9).object_id
+puts "---"
+p tree.depth_first_search(6).object_id
+puts "---"
+p tree.dfs_rec(9).object_id
+puts "---"
+p tree.dfs_rec(6).object_id
+puts "---"
